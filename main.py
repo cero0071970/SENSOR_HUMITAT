@@ -21,6 +21,7 @@ def main():
     import ssd1306
     import time
     import ds1307
+    import umqttsimple
     # GPIO PORTS I2C
     do_connect("dlinkosc", "Oscar1970")  # DESCOMENTAR Y PONER nombre/clave_de_red RED PARA EJECUTAR
     # do_connect("ASUS", "C0nv3rt1d0r33$")  # DESCOMENTAR Y PONER nombre/clave_de_red RED PARA EJECUTAR
