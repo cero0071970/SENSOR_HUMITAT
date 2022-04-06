@@ -6,21 +6,21 @@ def main():
     from umqttsimple import MQTTClient
     import time
     from connexio import do_connect
+    # CONNECT WIFI
+    station2 = do_connect("dlinkosc", "Oscar1970")
     # GPIO PORTS I2C
-    station2 = do_connect("dlinkosc","Oscar1970")
-
     I2C_SCL_PORT = 22
     I2C_SDA_PORT = 21
     # GPIO PORT DATA SENSOR
     SENSOR_DATA_PORT = 33
-
-    # topic_pub_hum=b'esp/humidity'
-
+    # MQTT DATA
     mqtt_server = "mqtt.flespi.io"
     client_id = "client_oscar"
-    client = MQTTClient(client_id, mqtt_server)
-    #client.connect(True)
-
+    topic_pub = b'humidity1'
+    topic_sub = b'humidity1'
+    #client = MQTTClient(client_id=client_id, server=mqtt_server, port=1883,
+    #                    user="kieaCcZaBZZu8vW2cjfn7skwHkLe6SVe0Zcq12psPeLNxxFyEKJB1TVy3xCXdl01", password="",)
+    #client.publish(topic_pub, b'23')
 
     i2c = SoftI2C(scl=Pin(I2C_SCL_PORT), sda=Pin(I2C_SDA_PORT))
 
@@ -35,7 +35,7 @@ def main():
     oled.text("SENSOR HUMITAT", 0, 0)
     oled.text("Created by me!!! :-)", 10, 20)
     oled.text("Xarxa: " + "dlinkosc", 0, 40)
-    #oled.text((station2.ifconfig())[0], 0, 50)
+    # oled.text((station2.ifconfig())[0], 0, 50)
     oled.show()
     time.sleep(3)
 
