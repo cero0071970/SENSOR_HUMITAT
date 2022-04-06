@@ -1,18 +1,42 @@
 """
-def do_connect(SSID, PASSWORD):
-    import network  # importa el módulo network
-    global station
-    station = network.WLAN(network.STA_IF)  # instancia el objeto -station- para controlar la interfaz STA
-    if not station.isconnected():  # si no existe conexión...
-        station.active(True)  # activa el interfaz STA del ESP32
-        station.connect(SSID, PASSWORD)  # inicia la conexión con el AP
-        print (station.scan())
-        print('Conectando a la red', SSID + "...")
+# Complete project details at https://RandomNerdTutorials.com
 
-        while not station.isconnected():  # ...si no se ha establecido la conexión...
-            pass  # ...repite el bucle...
-    print('Configuración de red (IP/netmask/gw/DNS):', station.ifconfig())
+import time
+from umqttsimple import MQTTClient
+import ubinascii
+import machine
+import micropython
+import network
+import esp
+esp.osdebug(None)
+#import gc
+#gc.collect()
 
 
-do_connect("ASUS", "C0nv3rt1d0r33$")  # DESCOMENTAR Y PONER nombre/clave_de_red RED PARA EJECUTAR
+ssid = 'wlanosc'
+password = 'Oscar1970'
+mqtt_server = 'mqtt.flespi.io'
+#EXAMPLE IP ADDRESS
+#mqtt_server = '192.168.1.144'
+client_id = ubinascii.hexlify(machine.unique_id())
+topic_sub = b'notification'
+topic_pub = b'hello'
+
+last_message = 0
+message_interval = 5
+counter = 0
+
+station = network.WLAN(network.STA_IF)
+
+print ("connecting")
+station.active(True)
+print(station.scan())
+station.connect(ssid, password)
+
+while station.isconnected() == False:
+  print ("connecting")
+  #pass
+
+print('Connection successful')
+print(station.ifconfig())
 """

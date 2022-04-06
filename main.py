@@ -1,3 +1,30 @@
+# Complete project details at https://RandomNerdTutorials.com
+
+def sub_cb(topic, msg):
+  print((topic, msg))
+  if topic == b'notification' and msg == b'received':
+    print('ESP received hello message')
+
+
+def connect_and_subscribe(client_id,mqtt_server,topic_sub):
+    from umqttsimple import MQTTClient
+    #global client_id, mqtt_server, topic_sub
+    client = MQTTClient(client_id, mqtt_server,1883,"kieaCcZaBZZu8vW2cjfn7skwHkLe6SVe0Zcq12psPeLNxxFyEKJB1TVy3xCXdl01","")
+    client.set_callback(sub_cb)
+    client.connect()
+    client.subscribe(topic_sub)
+    print('Connected to %s MQTT broker, subscribed to %s topic' % (mqtt_server, topic_sub))
+    return client
+
+def restart_and_reconnect():
+  print('Failed to connect to MQTT broker. Reconnecting...')
+  time.sleep(10)
+  machine.reset()
+
+
+
+
+
 def main():
     from machine import Pin, ADC, SoftI2C
     import ssd1306
@@ -5,9 +32,11 @@ def main():
     import ds1307
     from umqttsimple import MQTTClient
     import time
+
     from connexio import do_connect
     # CONNECT WIFI
     station2 = do_connect("dlinkosc", "Oscar1970")
+
     # GPIO PORTS I2C
     I2C_SCL_PORT = 22
     I2C_SDA_PORT = 21
@@ -18,10 +47,8 @@ def main():
     client_id = "client_oscar"
     topic_pub = b'humidity1'
     topic_sub = b'humidity1'
-    #client = MQTTClient(client_id=client_id, server=mqtt_server, port=1883,
-    #                    user="kieaCcZaBZZu8vW2cjfn7skwHkLe6SVe0Zcq12psPeLNxxFyEKJB1TVy3xCXdl01", password="",)
-    #client.publish(topic_pub, b'23')
-
+    client2=connect_and_subscribe(client_id,mqtt_server, topic_sub)
+    client2.publish(topic_pub,b'33',False,0)
     i2c = SoftI2C(scl=Pin(I2C_SCL_PORT), sda=Pin(I2C_SDA_PORT))
 
     ds = ds1307.DS1307(i2c)
@@ -43,6 +70,7 @@ def main():
     POT.atten(ADC.ATTN_11DB)
 
     oled.text("POTENCIA:", 0, 40)
+
     oled.show()
 
     HUM_MAX = 3400
@@ -72,9 +100,13 @@ def main():
         oled.text(hora, 0, 10)
         oled.text("m:" + str(min), 0, 50)
         oled.text("M:" + str(max), 60, 50)
-
+        oled.text("=======================", 0, 40)
         oled.show()
-        time.sleep(0.01)
+        client2.publish(topic_pub, str(int(HUM)), False, 0)
+
+
+        time.sleep(0.2)
+
 
 
 main()
